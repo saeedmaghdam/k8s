@@ -3,6 +3,20 @@
 echo "Would you like to install k3s? (y/N)? "
 read k3s
 
+IS_MASTER=$(hostname | grep -i "k8s-master")
+
+MASTER_IP=""
+MASTER_TOKEN=""
+if [ "$k3s" != "${k3s#[Yy]}" ] ;then
+    if [ -z "$IS_MASTER" ]; then
+        echo "Enter the IP address of the master node: "
+        read MASTER_IP
+
+        echo "Enter the token of the master node: "
+        read MASTER_TOKEN
+    fi
+fi
+
 # set the timezone to amsterdam
 ln -sf /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
 echo "Europe/Amsterdam" > /etc/timezone
@@ -33,17 +47,10 @@ if [ -z "$k3s" ]; then
 fi
 if [ "$k3s" != "${k3s#[Yy]}" ] ;then
     # install k3s
-    IS_MASTER=$(hostname | grep -i "k8s-master")
     if [ ! -z "$IS_MASTER" ]; then
         curl -sfL https://get.k3s.io | sh -
     else
-        echo "Enter the IP address of the master node: "
-        read master_ip
-
-        echo "Enter the token of the master node: "
-        read token
-
-        curl -sfL https://get.k3s.io | K3S_URL=https://$master_ip:6443 K3S_TOKEN=$token sh -
+        curl -sfL https://get.k3s.io | K3S_URL=https://$MASTER_IP:6443 K3S_TOKEN=$MASTER_TOKEN sh -
     fi
 else
     echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
