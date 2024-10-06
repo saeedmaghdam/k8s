@@ -54,3 +54,8 @@ EOF
 
 # Run setup-alpine with the generated answer file
 setup-alpine -f alpine-setup.conf
+
+# Download the configuration script and run it
+wget https://raw.githubusercontent.com/saeedmaghdam/k8s/refs/heads/main/config-alpine.sh
+chmod +x config-alpine.sh
+sh config-alpine.sh
