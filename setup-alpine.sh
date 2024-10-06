@@ -36,7 +36,7 @@ DNSOPTS="-d example.com $dns"
 TIMEZONEOPTS="-z UTC"
 
 # Uncomment if you need a proxy
-# PROXYOPTS="http://webproxy:8080"
+PROXYOPTS=""
 
 # Add a random mirror
 APKREPOSOPTS="-r"
