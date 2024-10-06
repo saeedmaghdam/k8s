@@ -6,8 +6,19 @@ set -e
 echo "Enter the VM_ID: "
 read VM_ID
 
-echo "Enter the cluster ID: "
-read CLUSTER_ID
+echo "Is this a master node? (y/N): "
+read IS_MASTER
+if [ -z "$IS_MASTER" ]; then
+  IS_MASTER=n
+fi
+if [ "$IS_MASTER" != "${IS_MASTER#[Yy]}" ]; then
+  NODE_TYPE=master
+else
+  NODE_TYPE=worker
+fi
+
+echo "Enter the node ID: "
+read NODE_ID
 
 echo "Enter Alpine image URL (default https://dl-cdn.alpinelinux.org/alpine/v3.20/releases/x86_64/alpine-virt-3.20.3-x86_64.iso): "
 read IMAGE
@@ -20,7 +31,11 @@ IMAGE_FILENAME=$(basename $IMAGE)
 
 # Settings that have to change each time a VM is created.
 #===================
-NAME=k8s-cluster-$CLUSTER_ID
+NAME=k8s-$NODE_TYPE
+if [ ! -z "$NODE_ID" ]; then
+  NAME=$NAME-$NODE_ID
+fi
+
 IP=10.0.1.$VM_ID/8
 #IP=dhcp
 #===================
