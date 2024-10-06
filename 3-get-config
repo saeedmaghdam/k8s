@@ -1,6 +1,10 @@
-# cat config file, replace server with the IP in the config file
+#!/bin/sh
+
 # Get the IP address of eth0
 ETH0_IP=$(ip addr show eth0 | grep 'inet ' | awk '{print $2}' | cut -d '/' -f 1)
+
+# Get the system's hostname
+HOSTNAME=$(hostname)
 
 # File path to the k3s config
 K3S_CONFIG="/etc/rancher/k3s/k3s.yaml"
@@ -14,8 +18,11 @@ fi
 # Backup the original config file
 cp "$K3S_CONFIG" "${K3S_CONFIG}.backup"
 
-# Replace the server address with eth0 IP
+# Replace the server address with eth0 IP, cluster name, and username with the hostname
 sed -i "s|server: https://127.0.0.1:6443|server: https://$ETH0_IP:6443|g" "$K3S_CONFIG"
+sed -i "s|name: default|name: $HOSTNAME|g" "$K3S_CONFIG"
+sed -i "s|user: default|user: $HOSTNAME|g" "$K3S_CONFIG"
+sed -i "s|cluster: default|cluster: $HOSTNAME|g" "$K3S_CONFIG"
 
 # Print the updated config to the console
 cat "$K3S_CONFIG"
