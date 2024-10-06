@@ -33,7 +33,18 @@ if [ -z "$k3s" ]; then
 fi
 if [ "$k3s" != "${k3s#[Yy]}" ] ;then
     # install k3s
-    curl -sfL https://get.k3s.io | sh -
+    IS_MASTER=$(hostname | grep -i "k8s-master")
+    if [ ! -z "$IS_MASTER" ]; then
+        curl -sfL https://get.k3s.io | sh -
+    else
+        echo "Enter the IP address of the master node: "
+        read master_ip
+
+        echo "Enter the token of the master node: "
+        read token
+
+        curl -sfL https://get.k3s.io | K3S_URL=https://$master_ip:6443 K3S_TOKEN=$token sh -
+    fi
 else
     echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
     echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
@@ -82,5 +93,25 @@ else
         # kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 
         kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+
+        # Mount /sys as a shared cgroup
+        echo '#!/bin/sh' | tee /etc/local.d/sys-shared-mount.start
+        echo 'mount --make-rshared /sys' | tee -a /etc/local.d/sys-shared-mount.start
+        chmod +x /etc/local.d/sys-shared-mount.start
+
+        echo '#!/bin/sh' | tee /etc/local.d/root-shared-mount.start
+        echo 'mount --make-rshared /' | tee -a /etc/local.d/root-shared-mount.start
+        chmod +x /etc/local.d/root-shared-mount.start
+
+        rc-update add local default
+
+        # To verify
+        # findmnt -o target,propagation /sys
+        # findmnt -o target,propagation /
+
+        rc-service kubelet restart
+        rc-service containerd restart
+        rc-update add kubelet default
+        rc-update add containerd default
     fi
 fi
