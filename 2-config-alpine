@@ -4,6 +4,16 @@ read -p "Would you like to install k3s? (y/N)? " k3s
 
 IS_MASTER=$(hostname | grep -i "k8s-master")
 
+# MASTER_IP=""
+# MASTER_TOKEN=""
+# if [ "$k3s" != "${k3s#[Yy]}" ] ;then
+#     if [ -z "$IS_MASTER" ]; then
+#         read -p "Enter the IP address of the master node: " MASTER_IP
+
+#         read -s -p "Enter the token of the master node: " MASTER_TOKEN
+#     fi
+# fi
+
 # set the timezone to amsterdam
 ln -sf /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
 echo "Europe/Amsterdam" > /etc/timezone
@@ -40,7 +50,7 @@ if [ "$k3s" != "${k3s#[Yy]}" ] ;then
         read -p "Enter the IP address of the master node: " MASTER_IP
 
         read -s -p "Enter the token of the master node: " MASTER_TOKEN
-
+        
         curl -sfL https://get.k3s.io | K3S_URL=https://$MASTER_IP:6443 K3S_TOKEN=$MASTER_TOKEN sh -
     fi
 else
