@@ -1,5 +1,8 @@
 # configure alpine
 
+echo "Would you like to install k3s? (y/N)? "
+read k3s
+
 # set the timezone to amsterdam
 ln -sf /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
 echo "Europe/Amsterdam" > /etc/timezone
@@ -25,8 +28,6 @@ echo "root ALL=(ALL) ALL" > /etc/sudoers
 # install ping, netcat, curl, wget, vim, git, bash
 apk add iputils netcat-openbsd curl wget vim git bash
 
-echo "Would you like to install k3s? (y/N)? "
-read k3s
 if [ -z "$k3s" ]; then
     k3s="n"
 fi
@@ -34,38 +35,39 @@ if [ "$k3s" != "${k3s#[Yy]}" ] ;then
     # install k3s
     curl -sfL https://get.k3s.io | sh -
 else
-    echo "Skip k3s installation"
-    return 0
-    # # install CRIO, kubeadm, kubectl, kubelet
-    # apk add crio kubeadm kubectl kubelet
-    # rc-update add crio
-    # rc-service crio start
+    echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+    echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+    apk update
 
-    # # install kubernetes tools
-    # curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/linux/amd64/kubectl
-    # chmod +x ./kubectl
-    # mv ./kubectl /usr/local/bin/kubectl
+    apk add cri-o kubeadm kubectl kubelet containerd
 
-    # # install and configure CNI
-    # mkdir -p /opt/cni/bin
-    # curl -L -o /opt/cni/bin/calico
-    # curl -L -o /opt/cni/bin/calico-ipam
-    # chmod +x /opt/cni/bin/calico
-    # chmod +x /opt/cni/bin/calico-ipam
+    # Disable swap immediately
+    swapoff -a
 
-    # # install and configure kubelet
-    # mkdir -p /etc/systemd/system/kubelet.service.d
-    # echo "[Service]" > /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-    # echo "Environment=\"KUBELET_EXTRA_ARGS=--cgroup-driver=systemd\"" >> /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-    # systemctl daemon-reload
-    # systemctl enable kubelet
-    # systemctl start kubelet
+    # Backup /etc/fstab
+    cp /etc/fstab /etc/fstab.bak
 
-    # # install and configure kubeadm
-    # mkdir -p /etc/systemd/system/kubelet.service.d
-    # echo "[Service]" > /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-    # echo "Environment=\"KUBELET_EXTRA_ARGS=--cgroup-driver=systemd\"" >> /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-    # systemctl daemon-reload
-    # systemctl enable kubelet
-    # systemctl start kubelet
+    # Comment out any swap entries in /etc/fstab to disable swap permanently
+    sed -i '/swap/s/^/#/' /etc/fstab
+
+    # Verify swap is disabled
+    if free | grep -i swap | grep '0'; then
+        echo "Swap is disabled."
+    else
+        echo "Failed to disable swap."
+        exit 1
+    fi
+
+    rc-update add kubelet default
+    service kubelet start
+
+    echo 1 > /proc/sys/net/ipv4/ip_forward
+
+    sed -i '/net.ipv4.ip_forward/s/^#//g' /etc/sysctl.conf; grep -q "net.ipv4.ip_forward" /etc/sysctl.conf || echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+
+    # check if hostname starts with k8s-master
+    IS_MASTER=$(hostname | grep -i "k8s-master")
+    if [ ! -z "$IS_MASTER" ]; then
+        kubeadm init --ignore-preflight-errors=NumCPU,Mem
+    fi
 fi
