@@ -31,3 +31,15 @@ kubeadm token create --print-join-command
 # on worker node
 kubekubeadm join ...
 ```
+## To add a unique id to the node name
+```bash
+# on worker node
+vi /etc/init.d/k3s-agent
+
+# find the line where the agent is started and append --with-node-id. For example:
+# command_args="agent --with-node-id \
+#     >>/var/log/k3s-agent.log 2>&1"
+
+# restart the agent
+rc-service k3s-agent restart
+```
