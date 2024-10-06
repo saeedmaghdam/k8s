@@ -1,0 +1,21 @@
+# cat config file, replace server with the IP in the config file
+# Get the IP address of eth0
+ETH0_IP=$(ip addr show eth0 | grep 'inet ' | awk '{print $2}' | cut -d '/' -f 1)
+
+# File path to the k3s config
+K3S_CONFIG="/etc/rancher/k3s/k3s.yaml"
+
+# Check if the file exists
+if [ ! -f "$K3S_CONFIG" ]; then
+  echo "Config file not found: $K3S_CONFIG"
+  exit 1
+fi
+
+# Backup the original config file
+cp "$K3S_CONFIG" "${K3S_CONFIG}.backup"
+
+# Replace the server address with eth0 IP
+sed -i "s|server: https://127.0.0.1:6443|server: https://$ETH0_IP:6443|g" "$K3S_CONFIG"
+
+# Print the updated config to the console
+cat "$K3S_CONFIG"
