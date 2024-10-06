@@ -43,3 +43,9 @@ vi /etc/init.d/k3s-agent
 # restart the agent
 rc-service k3s-agent restart
 ```
+
+
+## Get master node token which will be used in 2-config-alpine.sh
+```bash
+cat /var/lib/rancher/k3s/server/node-token
+```
