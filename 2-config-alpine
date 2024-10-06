@@ -1,7 +1,6 @@
 # configure alpine
 
-echo "Would you like to install k3s? (y/N)? "
-read k3s
+read -p "Would you like to install k3s? (y/N)? " k3s
 
 IS_MASTER=$(hostname | grep -i "k8s-master")
 
@@ -9,11 +8,9 @@ MASTER_IP=""
 MASTER_TOKEN=""
 if [ "$k3s" != "${k3s#[Yy]}" ] ;then
     if [ -z "$IS_MASTER" ]; then
-        echo "Enter the IP address of the master node: "
-        read MASTER_IP
+        read -p "Enter the IP address of the master node: " MASTER_IP
 
-        echo "Enter the token of the master node: "
-        read MASTER_TOKEN
+        read -s -p "Enter the token of the master node: " MASTER_TOKEN
     fi
 fi
 

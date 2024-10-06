@@ -3,11 +3,9 @@
 # Set to exit if any command fails
 set -e
 
-echo "Enter the VM_ID: "
-read VM_ID
+read -p "Enter the VM_ID: " VM_ID
 
-echo "Is this a master node? (y/N): "
-read IS_MASTER
+read -p "Is this a master node? (y/N): " IS_MASTER
 if [ -z "$IS_MASTER" ]; then
   IS_MASTER=n
 fi
@@ -17,11 +15,10 @@ else
   NODE_TYPE=worker
 fi
 
-echo "Enter the node ID: "
-read NODE_ID
+read -p "Enter the node ID: " NODE_ID
 
-echo "Enter Alpine image URL (default https://dl-cdn.alpinelinux.org/alpine/v3.20/releases/x86_64/alpine-virt-3.20.3-x86_64.iso): "
-read IMAGE
+IMAGE=https://dl-cdn.alpinelinux.org/alpine/v3.20/releases/x86_64/alpine-virt-3.20.3-x86_64.iso
+read -p "Enter Alpine image URL (default $IMAGE): " IMAGE
 if [ -z "$IMAGE" ]; then
   IMAGE=https://dl-cdn.alpinelinux.org/alpine/v3.20/releases/x86_64/alpine-virt-3.20.3-x86_64.iso
 fi
