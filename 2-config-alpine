@@ -69,5 +69,18 @@ else
     IS_MASTER=$(hostname | grep -i "k8s-master")
     if [ ! -z "$IS_MASTER" ]; then
         kubeadm init --ignore-preflight-errors=NumCPU,Mem
+    else
+        echo "cgroup  /sys/fs/cgroup  tmpfs  uid=0,gid=0,mode=0755  0  0" | sudo tee -a /etc/fstab
+
+        rc-update add cgroups default
+
+        rc-service cgroups start
+        rc-service containerd start
+
+        kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+
+        # kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
     fi
 fi
