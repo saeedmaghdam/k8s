@@ -49,3 +49,10 @@ rc-service k3s-agent restart
 ```bash
 cat /var/lib/rancher/k3s/server/node-token
 ```
+
+## Run nginx pods
+```bash
+kubectl run nginx1 --image nginx
+kubectl run nginx2 --image nginx
+kubectl run nginx3 --image nginx
+```
