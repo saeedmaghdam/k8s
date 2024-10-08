@@ -11,7 +11,6 @@ spec:
         except:
         - 10.42.0.0/16
         - 10.43.0.0/16
-        - 10.43.0.10/32
   - to:
     - namespaceSelector:
         matchLabels:
@@ -21,6 +20,8 @@ spec:
           k8s-app: kube-dns
     ports:
     - protocol: UDP
+      port:  53
+    - protocol: TCP
       port:  53
   policyTypes:
   - Egress
