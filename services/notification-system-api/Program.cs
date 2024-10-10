@@ -27,7 +27,8 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-var rabbitMqConnectionString = "amqp://guest:guest@localhost:5672/";
+var configurations = app.Services.GetRequiredService<IConfiguration>();
+var rabbitMqConnectionString = configurations["ConnectionStrings:RabbitMQ"];
 var queueName = "notification-management-api-queue";
 
 var factory = new ConnectionFactory { Uri = new Uri(rabbitMqConnectionString) };
