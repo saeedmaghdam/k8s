@@ -5,6 +5,14 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>notification_system_api</RootNamespace>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <RuntimeIdentifiers>
+      linux-x64;
+      linux-musl-x64;
+      linux-arm;
+      linux-arm64;
+      linux-musl-arm64;
+    </RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>

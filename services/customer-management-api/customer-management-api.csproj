@@ -5,6 +5,22 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>customer_management_api</RootNamespace>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <RuntimeIdentifiers>
+      win-x64;
+      win-x86;
+      win-arm;
+      win-arm64;
+      linux-x64;
+      linux-musl-x64;
+      linux-arm;
+      linux-arm64;
+      linux-musl-arm64;
+      osx-x64;
+      osx-arm64;
+      freebsd-x64;
+      freebsd-arm64
+    </RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
