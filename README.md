@@ -56,3 +56,8 @@ kubectl run nginx1 --image nginx
 kubectl run nginx2 --image nginx
 kubectl run nginx3 --image nginx
 ```
+
+## Run RabbitMQ in Docker locally
+```bash
+docker run --rm -p 5672:5672 -p 15672:15672 --name rabbitmq rabbitmq:4.0-management
+```
