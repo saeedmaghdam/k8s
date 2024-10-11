@@ -64,7 +64,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: customer-management-api.whoami.10.0.1.201.sslip.io
+    - host: customer-management-api.10.0.1.201.sslip.io
       paths:
         - path: /
           pathType: ImplementationSpecific
