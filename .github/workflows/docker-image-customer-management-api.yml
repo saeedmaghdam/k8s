@@ -72,9 +72,8 @@ jobs:
       # Generate a run_number env
       - name: Generate tag
         run: |
-          SHORT_SHA=${GITHUB_SHA::8}
-          RUN_NUMBER=$(printf "%04d" ${{ github.run_number }})
-          TAG="${RUN_NUMBER}-${SHORT_SHA}"
+          RUN_NUMBER=$(printf "%05d" ${{ github.run_number }})
+          TAG="r${RUN_NUMBER}"
           echo "TAG=$TAG" >> $GITHUB_ENV
         
       # Build and push Docker image with Buildx (don't push on PR)
