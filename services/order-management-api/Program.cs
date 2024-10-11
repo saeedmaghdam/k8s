@@ -31,7 +31,7 @@ app.UseMiddleware<RequestsMetricMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.MapPost("/", async (Order order, ILogger<Program> logger) =>
 {

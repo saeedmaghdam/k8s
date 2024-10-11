@@ -25,7 +25,7 @@ app.UseMiddleware<RequestsMetricMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 var configurations = app.Services.GetRequiredService<IConfiguration>();
 var rabbitMqConnectionString = configurations["ConnectionStrings:RabbitMQ"];

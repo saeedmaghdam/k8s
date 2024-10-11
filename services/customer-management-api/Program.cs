@@ -23,7 +23,7 @@ app.UseMiddleware<RequestsMetricMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.MapGet("/{id}", async ([FromRoute] string id, ILogger<Program> logger) =>
 {
