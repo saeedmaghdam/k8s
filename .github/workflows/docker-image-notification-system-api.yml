@@ -10,10 +10,12 @@ on:
     branches: [ "main" ]
     paths:
       - 'services/notification-system-api/**'
+      - '!services/notification-system-api/Deployment'
   pull_request:
     branches: [ "main" ]
     paths:
       - 'services/notification-system-api/**'
+      - '!services/notification-system-api/Deployment'
 
 env:
   # Use docker.io for Docker Hub if empty
