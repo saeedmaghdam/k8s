@@ -13,13 +13,14 @@ builder.Services.AddSingleton<IServiceStatus, ServiceStatus>();
 builder.Services.AddHealthChecks()
     .AddCheck<FakeHealthCheck>("fake_health_check");
 
+var configuration = builder.Configuration;
 builder.Services.AddHttpClient("customer-management", config =>
 {
-    config.BaseAddress = new Uri("http://localhost:5293");
+    config.BaseAddress = new Uri(configuration["CUSTOMER_MANAGEMENT_API_URL"]);
 });
 builder.Services.AddHttpClient("notification-system", config =>
 {
-    config.BaseAddress = new Uri("http://localhost:5011");
+    config.BaseAddress = new Uri(configuration["NOTIFICATION_SYSTEM_API_URL"]);
 });
 
 var app = builder.Build();
