@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "order-management-api.fullname" . }}
+  labels:
+    {{- include "order-management-api.labels" . | nindent 4 }}
+data:
+  CUSTOMER_MANAGEMENT_API_URL: {{ .Values.customerManagementApiUrl }}
+  NOTIFICATION_SYSTEM_API_URL: {{ .Values.notificationSystemApiUrl }}
