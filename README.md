@@ -72,5 +72,5 @@ docker run --rm -p 5672:5672 -p 15672:15672 --name rabbitmq rabbitmq:4.0-managem
 
 ## Run RabbitMQ in K8s
 ```bash
-helm upgrade --install --set ulimitNofiles=,ingress.hostname=rabbitmq.10.0.1.201.sslip.io,auth.user=user,auth.password=user,auth.erlangCookie=secretcookie,ingress.enabled=true rabbitmq bitnami/rabbitmq
+helm upgrade --install --set ulimitNofiles=,ingress.hostname=rabbitmq.10.0.1.201.sslip.io,auth.user=user,auth.password=user,auth.erlangCookie=secretcookie,replicaCount=3,ingress.enabled=true rabbitmq bitnami/rabbitmq
 ```
