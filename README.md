@@ -1,5 +1,13 @@
 # K8s
 
+## Test Results With/Without HPA Enabled
+HPA		| Round		| Total Requests		| 2xx		| 5xx
+--------------------------------------------------------------
+false	| 1		    | 10,000			    | 1428		| 966
+true	| 1		    | 10,000			    | 6107		| 2799
+true	| 2		    | 10,000				| 10,000	| 0
+true	| 3		    | 50,000 + (4 * 10,000)	| 86,657	| 4
+
 ## Create a VM (based on alpine)
 ```bash
 wget https://raw.githubusercontent.com/saeedmaghdam/k8s/refs/heads/main/create-alpine-machine.sh
