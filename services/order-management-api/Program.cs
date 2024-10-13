@@ -137,7 +137,8 @@ public interface IServiceStatus
 public class ServiceStatus : IServiceStatus
 {
     public bool Status { get; set; }
-    public int TotalRequestsInFlight { get; set; }
+
+    private static int _totalRequestsInFlight = 0;
 
     public ServiceStatus()
     {
@@ -145,14 +146,14 @@ public class ServiceStatus : IServiceStatus
     }
 
     public void IncreaseRequestsInFlight() {
-        Interlocked.Increment(ref TotalRequestsInFlight);
+        Interlocked.Increment(ref _totalRequestsInFlight);
     }
 
     public void DecreaseRequestsInFlight() {
-        Interlocked.Decrement(ref TotalRequestsInFlight);
+        Interlocked.Decrement(ref _totalRequestsInFlight);
     }
 
     public int GetRequestsInFlight() {
-        return TotalRequestsInFlight;
+        return _totalRequestsInFlight;
     }
 }
