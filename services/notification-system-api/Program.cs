@@ -67,7 +67,7 @@ app.MapPost("/health-status", (bool isHealthy, ILogger<Program> logger, IService
 .WithName("HealthStatus")
 .WithOpenApi();
 
-app.MapGet("/metrics", (IServiceStatus serviceStatus) => Results.Ok(serviceStatus.TotalRequestsInFlight));
+app.MapGet("/metrics", (IServiceStatus serviceStatus) => Results.Ok(serviceStatus.GetRequestsInFlight()));
 
 InitializeConsumer(app, queueName, channel);
 
@@ -120,25 +120,30 @@ public class RequestsMetricMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
+        bool shouldIncreaseMetrics = context.Request.Path != "/metrics";
         try
         {
-            if (context.Request.Path != "/metrics")
-                _serviceStatus.TotalRequestsInFlight++;
+            if (shouldIncreaseMetrics)
+                _serviceStatus.IncreaseRequestsInFlight();
 
             await _next(context);
         }
         finally
         {
-            if (context.Request.Path != "/metrics")
-                _serviceStatus.TotalRequestsInFlight--;
+            if (shouldIncreaseMetrics)
+                _serviceStatus.DecreaseRequestsInFlight();
         }
     }
 }
 
+
+
 public interface IServiceStatus
 {
     bool Status { get; set; }
-    int TotalRequestsInFlight { get; set; }
+    void IncreaseRequestsInFlight();
+    void DecreaseRequestsInFlight();
+    int GetRequestsInFlight();
 }
 
 public class ServiceStatus : IServiceStatus
@@ -149,5 +154,17 @@ public class ServiceStatus : IServiceStatus
     public ServiceStatus()
     {
         Status = true;
+    }
+
+    public void IncreaseRequestsInFlight() {
+        Interlocked.Increment(ref TotalRequestsInFlight);
+    }
+
+    public void DecreaseRequestsInFlight() {
+        Interlocked.Decrement(ref TotalRequestsInFlight);
+    }
+
+    public int GetRequestsInFlight() {
+        return TotalRequestsInFlight;
     }
 }
